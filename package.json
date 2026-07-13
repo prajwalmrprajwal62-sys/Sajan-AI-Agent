@@ -1,0 +1,21 @@
+{
+  "name": "sajan-ai-agent",
+  "version": "1.0.0",
+  "description": "SAJAN - Claude Fable 5 Inspired AI Agent",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test:e2e": "node tests/run-e2e.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "multer": "^2.2.0",
+    "pdf-parse": "^1.1.1",
+    "sql.js": "^1.11.0",
+    "uuid": "^10.0.0",
+    "ws": "^8.18.0"
+  }
+}

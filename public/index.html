@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      alert('Error: ' + msg + '\nLine: ' + lineNo);
+      return false;
+    };
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAJAN — AI Agent</title>
+  <meta name="description" content="SAJAN - A powerful AI agent inspired by Claude Fable 5 behavioral framework">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%237A2333'/%3E%3Cstop offset='100%25' stop-color='%23163832'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='14' fill='url(%23g)'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-size='14' font-weight='bold' font-family='sans-serif'%3ES%3C/text%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="styles.css?v=1.5">
+</head>
+<body class="theme-dark">
+  
+  <!-- Login Overlay -->
+  <div id="login-overlay" class="login-overlay active">
+    <!-- Login form -->
+    <div class="login-box">
+      <div style="text-align:center; margin-bottom: 24px;">
+        <h1 class="logo-text" style="font-size:32px; margin-bottom:8px">SAJAN</h1>
+        <p style="color:var(--text-secondary); font-size:14px">Authenticate to continue</p>
+      </div>
+      <form id="login-form">
+        <input type="text" id="username-input" class="login-input" placeholder="Enter your name" required autocomplete="off">
+        <button type="submit" class="login-submit">Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="app" id="app" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="logo-text">SAJAN</span>
+            <span class="version-badge">v1.0</span>
+          </div>
+          <div class="user-profile" id="user-profile" style="display: none; align-items: center; gap: 8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="display-username" style="font-size: 13px; color: var(--text-secondary); font-weight: 500;"></span>
+            <button id="logout-btn" title="Logout" style="background:transparent; border:none; color:var(--accent-secondary); cursor:pointer; font-size:12px; padding:0; text-decoration:underline;">Logout</button>
+          </div>
+        </div>
+        <button class="mobile-sidebar-toggle" id="mobile-sidebar-toggle" aria-label="Toggle sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+      </div>
+
+      <button class="new-chat-btn" id="new-chat-btn" aria-label="New conversation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>New Chat</span>
+      </button>
+
+      <div class="conversation-search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="conversation-search" id="conversation-search" placeholder="Search conversations..." aria-label="Search conversations">
+      </div>
+
+      <div class="conversation-list" id="conversation-list" role="list" aria-label="Conversations"></div>
+
+      <div class="sidebar-bottom">
+        <button class="sidebar-bottom-btn" id="memory-btn" aria-label="Memory">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 1 7 7c0 3-2 5.5-4 7.5L12 22l-3-5.5C7 14.5 5 12 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <span>Memory</span>
+        </button>
+        <button class="sidebar-bottom-btn" id="prefs-btn" aria-label="Preferences">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="8" cy="7" r="2" fill="currentColor"/><circle cx="16" cy="12" r="2" fill="currentColor"/><circle cx="10" cy="17" r="2" fill="currentColor"/></svg>
+          <span>Prefs</span>
+        </button>
+        <button class="sidebar-bottom-btn" id="settings-btn" aria-label="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-area" id="chat-area">
+      <header class="chat-header" id="chat-header">
+        <button class="mobile-sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="chat-header-info">
+          <span class="topbar-wordmark">SAJAN</span>
+          <span class="topbar-divider">/</span>
+          <h1 class="chat-title" id="chat-title">New Conversation</h1>
+          <div class="header-badges">
+            <span class="model-badge" id="model-badge">Gemini 3.5 Flash</span>
+          </div>
+        </div>
+
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </header>
+
+      <div class="messages-container" id="messages-container">
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcome-screen">
+          <div class="welcome-logo">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" fill="var(--accent-primary)" opacity="0.15"/><circle cx="32" cy="32" r="20" fill="var(--accent-primary)" opacity="0.3"/><circle cx="32" cy="32" r="12" fill="var(--accent-primary)"/></svg>
+          </div>
+          <h2 class="welcome-title">SAJAN</h2>
+          <p class="welcome-tagline">Built on Claude Fable 5 Principles</p>
+          <p class="welcome-subtitle">Reasoning · Safety · Memory · Search · Evenhandedness</p>
+          <div class="suggestion-grid">
+            <button class="suggestion-card" data-suggestion="Help me analyze a complex problem step by step">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>Help me analyze a complex problem step by step</span>
+            </button>
+            <button class="suggestion-card" data-suggestion="Write production-ready code with best practices">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span>Write production-ready code with best practices</span>
+            </button>
+            <button class="suggestion-card" data-suggestion="Research a topic and give me a balanced overview">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Research a topic and give me a balanced overview</span>
+            </button>
+            <button class="suggestion-card" data-suggestion="Help me think through a difficult decision">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              <span>Help me think through a difficult decision</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="scroll-bottom-btn" id="scroll-bottom-btn" aria-label="Scroll to bottom" style="display:none">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <div class="input-area" id="input-area">
+        <div class="thinking-indicator" id="thinking-indicator" style="display:none">
+          <span class="thinking-text">Sajan is thinking</span>
+          <div class="thinking-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="file-preview-area" id="file-preview-area" style="display:none"></div>
+        <input type="file" id="file-input" multiple style="display: none;">
+        <div class="input-wrapper">
+          <div class="mode-toggle" id="mode-toggle">
+            <button class="mode-btn" data-mode="low" title="Fast/Eco Mode">Low</button>
+            <button class="mode-btn active" data-mode="medium" title="Balanced Mode">Med</button>
+            <button class="mode-btn" data-mode="high" title="Deep Reasoning Mode">High</button>
+          </div>
+          <button class="attach-btn" id="attach-btn" type="button" aria-label="Attach file">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          </button>
+          <button class="mic-btn" id="mic-btn" type="button" aria-label="Voice input">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+          <textarea id="message-input" class="message-input" placeholder="Message SAJAN..." rows="1" aria-label="Type your message"></textarea>
+          <button class="send-btn" id="send-btn" aria-label="Send message" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="input-footer">
+          <span class="connection-status" id="connection-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Connecting...</span>
+          </span>
+          <span class="char-count" id="char-count"></span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settings-modal" style="display:none">
+    <div class="modal" role="dialog" aria-label="Settings">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button class="modal-close" id="settings-close" aria-label="Close settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-tab="general">General</button>
+        <button class="modal-tab" data-tab="api">API Configuration</button>
+        <button class="modal-tab" data-tab="about">About</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-content active" id="tab-general">
+          <div class="setting-group">
+            <label class="setting-label">Theme</label>
+            <div class="setting-row">
+              <span class="setting-desc">Switch between dark and light mode</span>
+              <button class="theme-switch" id="theme-switch">
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="tab-content" id="tab-api" style="display:none">
+          <div class="setting-group">
+            <label class="setting-label" for="api-provider">Provider</label>
+            <select class="setting-select" id="api-provider">
+              <option value="google">Google (Gemini)</option>
+              <option value="openai">OpenAI (GPT-4o)</option>
+              <option value="anthropic">Anthropic (Claude)</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label class="setting-label" for="api-key">API Key</label>
+            <div class="password-input-wrap">
+              <input type="password" class="setting-input" id="api-key" placeholder="Enter your API key">
+              <button class="password-toggle" id="password-toggle" aria-label="Show/hide API key">
+                <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="setting-group">
+            <label class="setting-label" for="api-model">Model Name (optional)</label>
+            <input type="text" class="setting-input" id="api-model" placeholder="e.g., gemini-3.5-flash">
+          </div>
+          <button class="save-btn" id="save-api-btn">Save Configuration</button>
+        </div>
+        <div class="tab-content" id="tab-about" style="display:none">
+          <div class="about-content">
+            <h3 class="about-title">SAJAN AI Agent</h3>
+            <p>SAJAN is a powerful AI agent built on all 16 behavioral categories from the Claude Fable 5 framework — the most advanced behavioral specification for AI assistants.</p>
+            <h4>Core Capabilities</h4>
+            <p>Safety-first design with child protection, comprehensive memory system, intelligent web search, copyright compliance, user wellbeing protocols, political evenhandedness, and premium conversational intelligence.</p>
+            <h4>Powered By</h4>
+            <p>Multi-provider LLM support: Google Gemini, OpenAI GPT-4o, and Anthropic Claude. All responses are filtered through safety middleware, memory injection, and copyright compliance layers.</p>
+            <div class="about-footer">
+              <span>Built with the Claude Fable 5 Implementation Guide</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Memory Panel -->
+  <div class="side-panel" id="memory-panel" style="display:none">
+    <div class="panel-header">
+      <h2>Memory</h2>
+      <button class="panel-close" id="memory-close" aria-label="Close memory panel">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="panel-body">
+      <div class="panel-form">
+        <input type="text" class="panel-input" id="memory-key" placeholder="Key (e.g., name, job, preference)">
+        <input type="text" class="panel-input" id="memory-value" placeholder="Value">
+        <select class="panel-select" id="memory-category">
+          <option value="personal">Personal</option>
+          <option value="professional">Professional</option>
+          <option value="preference">Preference</option>
+        </select>
+        <button class="panel-add-btn" id="add-memory-btn">Add Memory</button>
+      </div>
+      <div class="panel-list" id="memory-list"></div>
+    </div>
+  </div>
+
+  <!-- Preferences Panel -->
+  <div class="side-panel" id="prefs-panel" style="display:none">
+    <div class="panel-header">
+      <h2>Preferences</h2>
+      <button class="panel-close" id="prefs-close" aria-label="Close preferences panel">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="panel-body">
+      <div class="panel-form">
+        <input type="text" class="panel-input" id="pref-key" placeholder="Preference name">
+        <input type="text" class="panel-input" id="pref-value" placeholder="Value or instruction">
+        <select class="panel-select" id="pref-type">
+          <option value="behavioral">Behavioral</option>
+          <option value="contextual">Contextual</option>
+        </select>
+        <button class="panel-add-btn" id="add-pref-btn">Add Preference</button>
+      </div>
+      <div class="panel-list" id="prefs-list"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="app.js?v=1.5"></script>
+</body>
+</html>
