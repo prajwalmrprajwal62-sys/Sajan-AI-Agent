@@ -79,7 +79,7 @@ export class LLMClient {
     this.models = {
       openai: process.env.MODEL_NAME || 'gpt-4o',
       anthropic: process.env.MODEL_NAME || 'claude-sonnet-4-20250514',
-      google: process.env.MODEL_NAME || 'gemini-3.5-flash',
+      google: process.env.MODEL_NAME || 'gemini-2.5-flash',
     };
 
     // Retry configuration
@@ -96,13 +96,13 @@ export class LLMClient {
     }
     this.currentGoogleKeyIndex = 0;
 
-    // Use Gemini 3.x flash models for all modes
+    // Use Gemini 2.x flash models for all modes
     this.liveGoogleModels = {
-      low: 'gemini-3.1-flash-lite',
-      medium: 'gemini-3.5-flash',
-      high: 'gemini-3.5-flash'
+      low: 'gemini-2.0-flash-lite',
+      medium: 'gemini-2.5-flash',
+      high: 'gemini-2.5-flash'
     };
-    this.googleFallbackModels = ['gemini-3.5-flash', 'gemini-3.1-flash-lite'];
+    this.googleFallbackModels = ['gemini-2.5-flash', 'gemini-2.0-flash-lite'];
   }
 
   /** Return the API key for the active provider. */

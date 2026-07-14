@@ -928,11 +928,11 @@ function updateModelBadge(provider, model) {
   if (!badge) return;
   if (provider === 'google') {
     const modelNames = {
-      low: 'Gemini 3.1 Flash Lite',
-      medium: 'Gemini 3.5 Flash',
-      high: 'Gemini 3.5 Flash'
+      low: 'Gemini 2.0 Flash Lite',
+      medium: 'Gemini 2.5 Flash',
+      high: 'Gemini 2.5 Flash'
     };
-    badge.textContent = modelNames[state.intelligenceMode] || 'Gemini 3.5 Flash';
+    badge.textContent = modelNames[state.intelligenceMode] || 'Gemini 2.5 Flash';
   } else {
     const names = {
       openai: model || 'GPT-4o',
@@ -1264,6 +1264,10 @@ function setupEventListeners() {
   const themeToggle = $('#theme-toggle');
   if (themeToggle) {
     themeToggle.addEventListener('click', toggleTheme);
+  }
+  const themeSwitch = $('#theme-switch');
+  if (themeSwitch) {
+    themeSwitch.addEventListener('click', toggleTheme);
   }
 
   // Memory panel
